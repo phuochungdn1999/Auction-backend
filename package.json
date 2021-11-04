@@ -1,0 +1,39 @@
+{
+  "name": "auction-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon src/app/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bluebird": "^3.7.2",
+    "dotenv": "^8.2.0",
+    "elasticbulk": "^1.0.10",
+    "elasticsearch": "^16.7.1",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-openapi": "^7.2.0",
+    "faker": "^5.1.0",
+    "get-json": "^1.0.1",
+    "ioredis": "^4.19.2",
+    "joi": "^17.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.2.4",
+    "nodemailer": "^6.4.16",
+    "nodemon": "^2.0.6",
+    "redis": "^3.0.2",
+    "sequelize": "^6.3.5",
+    "swagger-ui-express": "^4.1.4",
+    "uuid": "^8.3.1",
+    "web3": "^1.6.0"
+  }
+}
