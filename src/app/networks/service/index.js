@@ -1,8 +1,11 @@
 const repository = require("../repository");
-const { Wallet } = require("../../../common/models/Wallet");
+const { Wallet,isAddress } = require("../../../common/models/Wallet");
 const sequelize = require("../../../database/connection");
 const jwt = require("jsonwebtoken");
-
+const {
+  ConflictedError,
+  NotFoundError,
+} = require("../../../common/errors/http-errors");
 async function getAll(req, res) {
   const itemCount = await repository.getCount();
   // let options = pagination(req.query, itemCount)
