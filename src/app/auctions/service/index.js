@@ -4,6 +4,7 @@ const { isAddress } = require("../../../common/models/Wallet");
 const { Auction } = require("../../../common/models/Auction");
 const { Network } = require("../../../common/models/Network");
 const { Wallet } = require("../../../common/models/Wallet");
+const { Image } = require("../../../common/models/Image");
 const repository = require("../repository");
 const netWorkRepository = require("../../networks/repository");
 const imageRepository = require("../../images/repository");
@@ -90,8 +91,10 @@ async function getOne(req, res) {
       },
     ],
   });
+  const image = await imageRepository.getAllByAuctionId(auction.id);
+  console.log(image);
   if (!auction) return res.status(400).json({ message: "Auction Not Found" });
-  return res.status(200).json({ data: auction });
+  return res.status(200).json({ data: { auction, image } });
 }
 
 async function updateOne(req, res) {

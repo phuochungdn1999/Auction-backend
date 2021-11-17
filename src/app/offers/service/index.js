@@ -19,6 +19,7 @@ async function getAll(req, res) {
 }
 async function getOfferByAuctionId(req, res) {
   const list = await repository.getOfferByAuctionId(req.params.id)
+  console.log(list)
   return res.status(200).json({ data: list});
 }
 async function getAll(req, res) {

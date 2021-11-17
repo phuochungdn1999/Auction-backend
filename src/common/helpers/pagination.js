@@ -4,7 +4,7 @@ module.exports = function(query, itemCount) {
   let options = {}
 
   if (!query.limit || !query.page) {
-    if (!query.limit) options.limit = 10
+    if (!query.limit) options.limit = 12
     else options.limit = parseInt(query.limit, 10)
     
     if (!query.page) { 

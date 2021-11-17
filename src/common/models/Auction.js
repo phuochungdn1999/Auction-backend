@@ -36,7 +36,6 @@ const Auction = sequelize.define(
     },
     start: {
       type: DataTypes.BIGINT,
-      allowNull: false,
       defaultValue: 0,
     },
     end: {
