@@ -1,8 +1,11 @@
 const { Offer } = require("../../../common/models/Offer");
+const { Auction } = require("../../../common/models/Auction");
 const {
   ConflictedError,
   NotFoundError,
 } = require("../../../common/errors/http-errors");
+const { QueryTypes } = require("sequelize");
+const sequelize = require("../../../database/connection");
 
 async function getAll(options) {
   const offers = await Offer.findAll();
@@ -32,6 +35,14 @@ async function getOfferByAuctionId(auctionId) {
   });
   return offer;
 }
+async function getOfferByWalletId(walletId, options) {
+  const offer = await sequelize.query(
+    `select offers.id,offers.walletId,offers.auctionId,offers.amount,offers.withdraw, offers.updatedAt,auctions.name,auctions.imageLogo,auctions.addressHighest,auctions.start,auctions.end from offers join auctions on offers.auctionId = auctions.id  join wallets on offers.walletId = wallets.id where walletId='${walletId}' ORDER BY updatedAt DESC`,
+    { type: QueryTypes.SELECT }
+  );
+  console.log("12123", offer);
+  return offer;
+}
 
 async function getOneByIdOrFail(id, options) {
   const offer = await Offer.findOne({
@@ -54,6 +65,7 @@ module.exports = {
   getOne,
   getOneByIdOrFail,
   getOfferByAuctionId,
+  getOfferByWalletId,
   // insertAll,
   // search,
   createOne,

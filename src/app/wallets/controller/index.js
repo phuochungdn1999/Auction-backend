@@ -11,6 +11,10 @@ router.get("/", async (req, res) => {
 router.post("/", [validateWallet], async (req, res) => {
   return await service.createOne(req, res);
 });
+router.get("/:id/offer", async (req, res) => {
+  // return await service.getOne(req, res)
+  return await service.getOffer(req, res);
+}); //done
 
 router.get("/:id", async (req, res) => {
   return await service.getOne(req, res);

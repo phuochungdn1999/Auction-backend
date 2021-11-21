@@ -37,10 +37,18 @@ async function getCount(options) {
   return itemCount;
 }
 
+async function getOffer(options) {
+  const auctions = await Wallet.findAll({ ...options });
+  return {
+    auctions,
+  };
+}
+
 module.exports = {
   getCount,
   getAll,
   getOne,
+  getOffer,
   // getOneByIdOrFail,
   // insertAll,
   // search,

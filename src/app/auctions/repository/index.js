@@ -3,9 +3,24 @@ const {
   ConflictedError,
   NotFoundError,
 } = require("../../../common/errors/http-errors");
+const Sequelize = require("sequelize");
+const client = require("../../../database/esConnection");
+
+const Op = Sequelize.Op;
 
 async function getAll(options) {
   const auctions = await Auction.findAll({ ...options });
+  return {
+    auctions,
+  };
+}
+async function searchSQL(name) {
+  const auctions = await Auction.findAll({
+    where: {
+      name: { [Op.like]: `%${name}%` },
+    },
+    attributes: ["id", "name"],
+  });
   return {
     auctions,
   };
@@ -20,17 +35,51 @@ async function getOne(id, options) {
 }
 
 async function getOneByIdOrFail(id, options) {
-  const auction = await Auction.findOne({ 
+  const auction = await Auction.findOne({
     where: { id },
-    ...options
-  })
-  if (!auction) throw new NotFoundError('Auction not found')
-  return auction
+    ...options,
+  });
+  if (!auction) throw new NotFoundError("Auction not found");
+  return auction;
 }
 
 async function createOne(body, options) {
   const auction = await Auction.create(body);
+  await insertOneToEs(auction);
   return auction;
+}
+
+async function insertOneToEs(auction) {
+  let bulkBody = [];
+  bulkBody.push({
+    index: {
+      _index: "auction",
+      _type: "_doc",
+      _id: auction.id,
+    },
+  });
+  bulkBody.push(auction);
+  client.bulk({ index: "auction", body: bulkBody });
+  return "Insert elasticsearch success";
+}
+
+async function search(body) {
+  let results = await client.search({
+    index: "auction",
+    body: body,
+  });
+  console.log("123123", results.hits.hits);
+
+  const auctions = results.hits.hits.map((o) => ({
+    id: o._source.id,
+    name: o._source.name,
+  }));
+
+  return {
+    statusCode: 200,
+    data: { auctions: auctions },
+    total: auctions.length > 0 ? auctions.length : 0,
+  };
 }
 
 async function getCount(options) {
@@ -46,6 +95,8 @@ module.exports = {
   // insertAll,
   // search,
   createOne,
+  search,
+  searchSQL,
   // failIfDuplicated,
   // getOneWithOptions,
 };

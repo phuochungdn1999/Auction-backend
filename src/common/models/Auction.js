@@ -20,7 +20,7 @@ const Auction = sequelize.define(
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(),
       allowNull: false,
     },
     owner: {

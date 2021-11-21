@@ -1,6 +1,7 @@
 const pagination = require("../../../common/helpers/pagination");
 const sequelize = require("../../../database/connection");
 const { isAddress } = require("../../../common/models/Wallet");
+const { Offer } = require("../../../common/models/Offer");
 const { Auction } = require("../../../common/models/Auction");
 const { Network } = require("../../../common/models/Network");
 const { Wallet } = require("../../../common/models/Wallet");
@@ -22,6 +23,20 @@ async function getAll(req, res) {
   return res.status(200).json({ data: auctions, ...options });
 }
 
+async function search(req, res) {
+  let body = {
+    size: req.query.size || 100,
+    from: 0,
+    query: {
+      wildcard: {
+        name: `*${req.params.name.toLocaleLowerCase()}*`,
+      },
+    },
+  };
+  const data = await repository.search(body);
+  return res.status(200).json({ data });
+}
+
 async function createOne(req, res) {
   console.log(req.user);
   console.log(req.body);
@@ -36,12 +51,12 @@ async function createOne(req, res) {
   }
 
   const current = Math.round(new Date().getTime() / 1000);
-  if (start <= current) {
-    return res
-      .status(404)
-      .json({ message: "Start time must greater than current" });
-  }
-  if (end !== 0 && end <= start) {
+  // if (start <= current) {
+  //   return res
+  //     .status(404)
+  //     .json({ message: "Start time must greater than current" });
+  // }
+  if ((end !== 0 && end <= current) || end <= start) {
     return res
       .status(404)
       .json({ message: "End time must greater than start time" });
@@ -106,7 +121,7 @@ async function updateOne(req, res) {
       .status(404)
       .json({ message: "Start time must greater than current" });
   }
-  if (end !== 0 && end <= start) {
+  if (end !== 0 && end <= current) {
     return res
       .status(404)
       .json({ message: "End time must greater than start time" });
@@ -129,6 +144,6 @@ module.exports = {
   createOne,
   updateOne,
   // insertAll,
-  // search,
+  search,
   // searchByName
 };

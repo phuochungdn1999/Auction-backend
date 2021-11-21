@@ -14,6 +14,10 @@ module.exports = function () {
     as: "wallets",
     foreignKey: "owner",
   });
+  Offer.belongsTo(Auction, {
+    as: "auction",
+    foreignKey: "id",
+  });
   Image.belongsTo(Auction, {
     as: "images",
     foreignKey: "auctionId",

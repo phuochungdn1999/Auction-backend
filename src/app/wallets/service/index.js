@@ -3,6 +3,8 @@ const networkRepository = require("../../networks/repository");
 const { Wallet, isAddress } = require("../../../common/models/Wallet");
 const sequelize = require("../../../database/connection");
 const jwt = require("jsonwebtoken");
+const { Offer } = require("../../../common/models/Offer");
+const { Auction } = require("../../../common/models/Auction");
 const Web3 = require("web3");
 const pagination = require("../../../common/helpers/pagination");
 const {
@@ -17,6 +19,25 @@ async function getAll(req, res) {
   const wallets = await repository.getAll({ ...options });
   return res.status(200).json({ data: wallets, ...options });
 }
+async function getOffer(req, res) {
+  const auction = await repository.getOffer(req.params.id, {
+    include: [
+      {
+        model: Offer,
+        as: "offers",
+        attributes: ["id"],
+      },
+      {
+        model: Auction,
+        as: "auctions",
+        attributes: ["id", "name"],
+      },
+    ],
+  });
+
+  if (!auction) return res.status(400).json({ message: "Auction Not Found" });
+  return res.status(200).json({ data: { auction } });
+}
 
 async function createOne(req, res) {
   const transaction = await sequelize.transaction();
@@ -25,7 +46,7 @@ async function createOne(req, res) {
   if (!isAddress(id)) {
     return res.status(404).json({ message: "Wallet is not valid" });
   }
-  req.body.id = String(id).toLocaleLowerCase()
+  req.body.id = String(id).toLocaleLowerCase();
 
   await networkRepository.getOneByIdOrFail(networkId);
   let wallet = await repository.getOne(id);
@@ -72,5 +93,6 @@ module.exports = {
   // insertAll,
   // search,
   createOne,
+  getOffer,
   // deleteOne,
 };
