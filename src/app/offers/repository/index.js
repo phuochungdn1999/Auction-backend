@@ -37,7 +37,7 @@ async function getOfferByAuctionId(auctionId) {
 }
 async function getOfferByWalletId(walletId, options) {
   const offer = await sequelize.query(
-    `select offers.id,offers.walletId,offers.auctionId,offers.amount,offers.withdraw, offers.updatedAt,auctions.name,auctions.imageLogo,auctions.addressHighest,auctions.start,auctions.end from offers join auctions on offers.auctionId = auctions.id  join wallets on offers.walletId = wallets.id where walletId='${walletId}' ORDER BY updatedAt DESC`,
+    `select offers.id,offers.walletId,offers.auctionId,offers.amount,offers.withdraw, offers.updatedAt,auctions.name,auctions.imageLogo,auctions.addressHighest,auctions.start,auctions.end from offers inner join auctions on offers.auctionId = auctions.id inner join wallets on offers.walletId = wallets.id where walletId='${walletId}' ORDER BY updatedAt DESC`,
     { type: QueryTypes.SELECT }
   );
   console.log("12123", offer);

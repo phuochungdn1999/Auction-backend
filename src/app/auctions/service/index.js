@@ -4,23 +4,77 @@ const { isAddress } = require("../../../common/models/Wallet");
 const { Offer } = require("../../../common/models/Offer");
 const { Auction } = require("../../../common/models/Auction");
 const { Network } = require("../../../common/models/Network");
+const { Category } = require("../../../common/models/Category");
+const { CategoryAuction } = require("../../../common/models/CategoryAuction");
 const { Wallet } = require("../../../common/models/Wallet");
 const { Image } = require("../../../common/models/Image");
 const repository = require("../repository");
 const netWorkRepository = require("../../networks/repository");
 const imageRepository = require("../../images/repository");
+const categoryRepository = require("../../categories/repository");
+const BigNumber = require("bignumber.js");
 const {
   ConflictedError,
   NotFoundError,
 } = require("../../../common/errors/http-errors");
 async function getAll(req, res) {
-  const itemCount = await repository.getCount();
-  const options = pagination(req.query, itemCount);
+  console.log(req.query);
+  console.log(req.query.categoryId);
+  let objCategory;
+  let auctions;
+  let itemCount;
+  let options;
+  console.log(req.query.categoryId === "ALL");
+  console.log(req.query.categoryId && !req.query.categoryId === "ALL");
+  if (req.query.categoryId && req.query.categoryId !== "ALL") {
+    itemCount = await repository.getCount({
+      include: [
+        {
+          model: CategoryAuction,
+          as: "category-auction",
+          where: { categoryId: req.query.categoryId },
+        },
+      ],
+    });
+    console.log("itemcount", itemCount);
+    options = pagination(req.query, itemCount);
+    auctions = await repository.getAll({
+      include: [
+        {
+          model: CategoryAuction,
+          as: "category-auction",
+          where: { categoryId: req.query.categoryId },
+        },
+      ],
+      ...options,
+    });
+  } else {
+    console.log("12313");
+    // delete req.query.categoryId;
 
-  const auctions = await repository.getAll({
-    ...options,
-  });
+    itemCount = await repository.getCount();
+    options = pagination(req.query, itemCount);
+    auctions = await repository.getAll({
+      ...options,
+    });
+  }
+
   return res.status(200).json({ data: auctions, ...options });
+}
+async function getAuctionByWalletId(req, res) {
+  // const itemCount = await repository.getCount();
+  // const options = pagination(req.query, itemCount);
+  console.log(req.params.walletId);
+  const auctions = await repository.getAuctionByWalletId(req.params.walletId);
+  let totalValue = 0;
+  console.log(auctions.auctions);
+  auctions.auctions.forEach((element) => {
+    totalValue = new BigNumber(totalValue).plus(element.highestBid);
+  });
+  totalValue = new BigNumber(totalValue).dividedBy(10 ** 18).toFixed(2);
+  return res
+    .status(200)
+    .json({ data: { auctions, totalValue, items: auctions.auctions.length } });
 }
 
 async function search(req, res) {
@@ -49,6 +103,9 @@ async function createOne(req, res) {
   if (!isAddress(req.user.id)) {
     return res.status(404).json({ message: "Wallet is not valid" });
   }
+  const categoryArray = await categoryRepository.getFromArray(
+    req.body.categoryList
+  );
 
   const current = Math.round(new Date().getTime() / 1000);
   // if (start <= current) {
@@ -74,6 +131,11 @@ async function createOne(req, res) {
   let auction = await repository.createOne(req.body, {
     transaction: transaction,
   });
+
+  await categoryRepository.updateAuctionCategory(
+    req.body.categoryList,
+    auction.id
+  );
   const imageData = req.body.images.map((data) => {
     return {
       url: data,
@@ -143,6 +205,7 @@ module.exports = {
   // getProductInWarehouse,
   createOne,
   updateOne,
+  getAuctionByWalletId,
   // insertAll,
   search,
   // searchByName

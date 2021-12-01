@@ -5,7 +5,6 @@ const {
 } = require("../../../common/errors/http-errors");
 const Sequelize = require("sequelize");
 const client = require("../../../database/esConnection");
-
 const Op = Sequelize.Op;
 
 async function getAll(options) {
@@ -19,7 +18,27 @@ async function searchSQL(name) {
     where: {
       name: { [Op.like]: `%${name}%` },
     },
-    attributes: ["id", "name"],
+    attributes: ["id", "name", "highestBid", "start", "end", "imageLogo"],
+  });
+  return {
+    auctions,
+  };
+}
+async function getAuctionByWalletId(walletId) {
+  const auctions = await Auction.findAll({
+    where: {
+      owner: walletId,
+    },
+    attributes: [
+      "id",
+      "name",
+      "start",
+      "end",
+      "highestBid",
+      "imageLogo",
+      "updatedAt",
+    ],
+    order: [["updatedAt", "DESC"]],
   });
   return {
     auctions,
@@ -97,6 +116,7 @@ module.exports = {
   createOne,
   search,
   searchSQL,
+  getAuctionByWalletId,
   // failIfDuplicated,
   // getOneWithOptions,
 };
