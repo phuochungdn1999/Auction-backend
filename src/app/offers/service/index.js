@@ -36,6 +36,12 @@ async function getAll(req, res) {
   });
   return res.status(200).json({ data: auctions, ...options });
 }
+async function getTopOffer(req, res) {
+ 
+  const offers = await repository.getTopOffer();
+
+  return res.status(200).json({ data: offers,  });
+}
 
 async function createOne(req, res) {
   const { auctionId, amount } = req.body;
@@ -109,6 +115,8 @@ async function createOne(req, res) {
   }
 }
 
+
+
 module.exports = {
   getAll,
   // getOne,
@@ -116,6 +124,7 @@ module.exports = {
   createOne,
   getOfferByAuctionId,
   getOfferByWalletId,
+  getTopOffer
   // updateOne,
   // search,
   // searchByName

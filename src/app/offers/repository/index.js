@@ -20,6 +20,14 @@ async function getOne(id) {
   });
   return offer;
 }
+async function getTopOffer() {
+  const offer = await sequelize.query(
+    `SELECT offers.id,offers.walletId,offers.auctionId,offers.amount,wallets.image,wallets.name,offers.updatedAt FROM auction.offers inner join wallets on wallets.id = offers.walletId ORDER BY updatedAt DESC LIMIT 12;`,
+    { type: QueryTypes.SELECT }
+  );
+  console.log("12123", offer);
+  return offer;
+}
 async function getOneByWalletAndAuction(address, auctionId) {
   const offer = await Offer.findOne({
     where: { walletId: address, auctionId: auctionId },
@@ -70,6 +78,7 @@ module.exports = {
   // search,
   createOne,
   getOneByWalletAndAuction,
+  getTopOffer
   // failIfDuplicated,
   // getOneWithOptions,
 };

@@ -5,6 +5,9 @@ const { auth } = require("../../../common/middlewares/auth");
 router.get("/", async (req, res) => {
   // return await service.getAll(req, res);
 }); //done
+router.get("/top", async (req, res) => {
+  return await service.getTopOffer(req, res);
+}); //done
 
 router.get("/:id", async (req, res) => {
   // return await service.getOne(req, res)
