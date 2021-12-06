@@ -25,6 +25,10 @@ const Offer = sequelize.define(
       type: DataTypes.DOUBLE,
       defaultValue: 0,
     },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     status: {
       type: DataTypes.STRING,
       defaultValue: "INPROCESS",

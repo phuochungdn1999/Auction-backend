@@ -93,6 +93,7 @@ async function createOne(req, res) {
         .json({ message: "The bid is lower than current bid1" });
     } else {
       req.body.walletId = req.user.id;
+      req.body.address = "address 1";
       const offer = await repository.createOne(req.body);
       let obj3 = {
         addressHighest: req.user.id,

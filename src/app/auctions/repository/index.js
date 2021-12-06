@@ -13,6 +13,12 @@ async function getAll(options) {
     auctions,
   };
 }
+async function getTopAuction(options) {
+  const auctions = await Auction.findAll({order: [["highestBid", "DESC"]],limit: 12 });
+  return {
+    auctions,
+  };
+}
 async function searchSQL(name) {
   const auctions = await Auction.findAll({
     where: {
@@ -117,6 +123,7 @@ module.exports = {
   search,
   searchSQL,
   getAuctionByWalletId,
+  getTopAuction
   // failIfDuplicated,
   // getOneWithOptions,
 };

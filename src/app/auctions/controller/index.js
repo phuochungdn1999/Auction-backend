@@ -12,6 +12,9 @@ router.get("/search/:name", async (req, res) => {
 router.get("/wallet/:walletId", async (req, res) => {
   return await service.getAuctionByWalletId(req, res);
 }); //done
+router.get("/top", async (req, res) => {
+  return await service.getTopAuction(req, res);
+}); //done
 
 router.get("/:id", async (req, res) => {
   // return await service.getOne(req, res)

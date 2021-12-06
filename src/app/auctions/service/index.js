@@ -61,6 +61,13 @@ async function getAll(req, res) {
 
   return res.status(200).json({ data: auctions, ...options });
 }
+
+async function getTopAuction(req, res) {
+  const auctions = await repository.getTopAuction();
+
+
+  return res.status(200).json({ data: auctions});
+}
 async function getAuctionByWalletId(req, res) {
   // const itemCount = await repository.getCount();
   // const options = pagination(req.query, itemCount);
@@ -208,5 +215,6 @@ module.exports = {
   getAuctionByWalletId,
   // insertAll,
   search,
+  getTopAuction
   // searchByName
 };
