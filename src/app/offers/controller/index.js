@@ -22,6 +22,10 @@ router.get("/auction/:id", async (req, res) => {
   return await service.getOfferByAuctionId(req, res);
   // return await service.getOne(req, res);
 }); //done
+router.get("/wallet/auction/:id", auth,async (req, res) => {
+  return await service.getOfferWithWalletAuction(req, res);
+  // return await service.getOne(req, res);
+}); //done
 router.get("/wallet/:id", async (req, res) => {
   return await service.getOfferByWalletId(req, res);
   // return await service.getOne(req, res);

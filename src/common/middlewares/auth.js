@@ -4,10 +4,11 @@ const jwt = require('jsonwebtoken')
  * @Usage Authenticate via jwt Bearer token with Authorization header
  */
 async function auth(req, res, next) {
+  console.log(req.header('Authorization'))
   if (req.header('Authorization') && req.header('Authorization').startsWith("Bearer ")) {
     // take string 'Bearer ' out from Authorization to take pure token
     const token = req.header('Authorization').substring(7, req.header('Authorization').length)
-    
+      console.log("token")
     try {
       const payload = jwt.verify(token, process.env.JWT_KEY||12312)
       req.user = payload

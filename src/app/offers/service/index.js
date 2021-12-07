@@ -27,6 +27,11 @@ async function getOfferByWalletId(req, res) {
   console.log(list);
   return res.status(200).json({ data: list });
 }
+async function getOfferWithWalletAuction(req, res) {
+  const list = await repository.getOfferWithWalletAuction(req.params.id, req.user.address);
+  console.log(list);
+  return res.status(200).json({ data: list });
+}
 async function getAll(req, res) {
   const itemCount = await repository.getCount();
   const options = pagination(req.query, itemCount);
@@ -75,9 +80,18 @@ async function createOne(req, res) {
         .status(400)
         .json({ message: "The bid is lower than current bid" });
     }
-    const obj = {
-      amount: parseFloat(data.amount) + parseFloat(req.body.amount),
-    };
+    let obj;
+    if(req.body.address){
+      obj = {
+        amount: parseFloat(data.amount) + parseFloat(req.body.amount),
+        address: req.body.address
+      };
+    }else{
+      obj = {
+        amount: parseFloat(data.amount) + parseFloat(req.body.amount),
+      };
+    }
+     
 
     await Offer.update(obj, { where: { id: data.id } });
     let obj2 = {
@@ -99,7 +113,6 @@ async function createOne(req, res) {
         .json({ message: "The bid is lower than current bid1" });
     } else {
       req.body.walletId = req.user.id;
-      req.body.address = "address 1";
       const offer = await repository.createOne(req.body);
       let obj3 = {
         addressHighest: req.user.id,
@@ -124,7 +137,8 @@ module.exports = {
   createOne,
   getOfferByAuctionId,
   getOfferByWalletId,
-  getTopOffer
+  getTopOffer,
+  getOfferWithWalletAuction
   // updateOne,
   // search,
   // searchByName
