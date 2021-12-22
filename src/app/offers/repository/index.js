@@ -65,7 +65,6 @@ async function getOfferWithWalletAuction(auctionId, walletId) {
   const offer = await Offer.findOne({
     where: { auctionId:auctionId,walletId:walletId },
   });
-  if (!offer) throw new NotFoundError("Offer not found");
   return offer;
 }
 

@@ -46,6 +46,7 @@ async function getAll(req, res) {
           where: { categoryId: req.query.categoryId },
         },
       ],
+      order: [["updatedAt", "DESC"]],
       ...options,
     });
   } else {
@@ -55,6 +56,7 @@ async function getAll(req, res) {
     itemCount = await repository.getCount();
     options = pagination(req.query, itemCount);
     auctions = await repository.getAll({
+      order: [["updatedAt", "DESC"]],
       ...options,
     });
   }
@@ -65,8 +67,7 @@ async function getAll(req, res) {
 async function getTopAuction(req, res) {
   const auctions = await repository.getTopAuction();
 
-
-  return res.status(200).json({ data: auctions});
+  return res.status(200).json({ data: auctions });
 }
 async function getAuctionByWalletId(req, res) {
   // const itemCount = await repository.getCount();
@@ -205,6 +206,36 @@ async function updateOne(req, res) {
   await Auction.update(req.body, { where: { id: req.params.id } });
   return res.json({ status: 200 });
 }
+async function approveAuction(req, res) {
+  const { id } = req.params;
+  const auction = await repository.getOneByIdOrFail(id);
+  const updateBody = {
+    endAuction: true,
+  };
+  await Auction.update(updateBody, { where: { id: id } });
+
+  return res.json({ status: 200 });
+}
+async function confirmReceive(req, res) {
+  const { id } = req.params;
+  const auction = await repository.getOneByIdOrFail(id);
+  const updateBody = {
+    buyerApprove: true,
+  };
+  await Auction.update(updateBody, { where: { id: id } });
+
+  return res.json({ status: 200 });
+}
+async function confirmSend(req, res) {
+  const { id } = req.params;
+  const auction = await repository.getOneByIdOrFail(id);
+  const updateBody = {
+    onwerApproved: true,
+  };
+  await Auction.update(updateBody, { where: { id: id } });
+
+  return res.json({ status: 200 });
+}
 
 module.exports = {
   getAll,
@@ -215,6 +246,9 @@ module.exports = {
   getAuctionByWalletId,
   // insertAll,
   search,
-  getTopAuction
+  getTopAuction,
+  approveAuction,
+  confirmReceive,
+  confirmSend,
   // searchByName
 };

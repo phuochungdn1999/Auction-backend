@@ -20,7 +20,6 @@ async function getOfferByWalletId(req, res) {
       {
         model: Auction,
         as: "auctions",
-        
       },
     ],
   });
@@ -28,7 +27,11 @@ async function getOfferByWalletId(req, res) {
   return res.status(200).json({ data: list });
 }
 async function getOfferWithWalletAuction(req, res) {
-  const list = await repository.getOfferWithWalletAuction(req.params.id, req.user.address);
+  const list = await repository.getOfferWithWalletAuction(
+    req.params.id,
+    req.user.id
+  );
+
   console.log(list);
   return res.status(200).json({ data: list });
 }
@@ -42,10 +45,9 @@ async function getAll(req, res) {
   return res.status(200).json({ data: auctions, ...options });
 }
 async function getTopOffer(req, res) {
- 
   const offers = await repository.getTopOffer();
 
-  return res.status(200).json({ data: offers,  });
+  return res.status(200).json({ data: offers });
 }
 
 async function createOne(req, res) {
@@ -70,28 +72,22 @@ async function createOne(req, res) {
   );
   if (data) {
     console.log(data.id);
-    if (
-      parseFloat(data.amount) +
-        parseFloat(req.body.amount) -
-        parseFloat(data.withdraw) <=
-      auction.highestBid
-    ) {
+    if (parseFloat(req.body.amount) <= auction.highestBid) {
       return res
         .status(400)
         .json({ message: "The bid is lower than current bid" });
     }
     let obj;
-    if(req.body.address){
+    if (req.body.address) {
       obj = {
-        amount: parseFloat(data.amount) + parseFloat(req.body.amount),
-        address: req.body.address
+        amount: parseFloat(req.body.amount),
+        address: req.body.address,
       };
-    }else{
+    } else {
       obj = {
-        amount: parseFloat(data.amount) + parseFloat(req.body.amount),
+        amount: parseFloat(req.body.amount),
       };
     }
-     
 
     await Offer.update(obj, { where: { id: data.id } });
     let obj2 = {
@@ -128,8 +124,6 @@ async function createOne(req, res) {
   }
 }
 
-
-
 module.exports = {
   getAll,
   // getOne,
@@ -138,7 +132,7 @@ module.exports = {
   getOfferByAuctionId,
   getOfferByWalletId,
   getTopOffer,
-  getOfferWithWalletAuction
+  getOfferWithWalletAuction,
   // updateOne,
   // search,
   // searchByName

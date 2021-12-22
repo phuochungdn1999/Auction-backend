@@ -24,6 +24,15 @@ router.get("/:id", async (req, res) => {
 router.post("/", [auth], async (req, res) => {
   return await service.createOne(req, res);
 }); //done
+router.post("/approve/:id", [auth], async (req, res) => {
+  return await service.approveAuction(req, res);
+}); //done
+router.post("/send/:id", [auth], async (req, res) => {
+  return await service.confirmSend(req, res);
+}); //done
+router.post("/receive/:id", [auth], async (req, res) => {
+  return await service.confirmReceive(req, res);
+}); //done
 
 router.patch("/:id", [auth, validateAuction], async (req, res) => {
   return await service.updateOne(req, res);

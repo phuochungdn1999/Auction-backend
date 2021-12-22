@@ -14,7 +14,13 @@ async function getAll(options) {
   };
 }
 async function getTopAuction(options) {
-  const auctions = await Auction.findAll({order: [["highestBid", "DESC"]],limit: 12 });
+  const auctions = await Auction.findAll({
+    order: [
+      ["updatedAt", "DESC"],
+      ["highestBid", "DESC"],
+    ],
+    limit: 12,
+  });
   return {
     auctions,
   };
@@ -43,6 +49,7 @@ async function getAuctionByWalletId(walletId) {
       "highestBid",
       "imageLogo",
       "updatedAt",
+      "numberOfParticipants"
     ],
     order: [["updatedAt", "DESC"]],
   });
@@ -123,7 +130,7 @@ module.exports = {
   search,
   searchSQL,
   getAuctionByWalletId,
-  getTopAuction
+  getTopAuction,
   // failIfDuplicated,
   // getOneWithOptions,
 };
