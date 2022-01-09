@@ -29,13 +29,11 @@ async function getOffer(req, res) {
       },
       {
         model: Auction,
-        as: "auctions",
+        as: "auction",
         attributes: ["id", "name"],
       },
     ],
   });
-
-  if (!auction) return res.status(400).json({ message: "Auction Not Found" });
   return res.status(200).json({ data: { auction } });
 }
 
