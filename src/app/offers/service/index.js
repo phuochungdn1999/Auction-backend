@@ -36,13 +36,24 @@ async function getOfferWithWalletAuction(req, res) {
   return res.status(200).json({ data: list });
 }
 async function getAll(req, res) {
+  let auctions;
+  let options;
   const itemCount = await repository.getCount();
-  const options = pagination(req.query, itemCount);
+  if (req.query.filter === "ALL") {
+    console.log("123123")
+    auctions = await repository.getAll({
+      order: [["updatedAt", "DESC"]]
+    });
+  } else {
+    options = pagination(req.query, itemCount);
 
-  const auctions = await repository.getAll({
-    ...options,
-  });
-  return res.status(200).json({ data: auctions, ...options });
+    auctions = await repository.getAll({
+      order: [["updatedAt", "DESC"]],
+      ...options
+    });
+  }
+
+  return res.status(200).json({ data: auctions, ...options ,itemCount});
 }
 async function getTopOffer(req, res) {
   const offers = await repository.getTopOffer();

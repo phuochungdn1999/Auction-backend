@@ -8,7 +8,7 @@ const {
 /**
  * Return connection of the database
  */
-module.exports = new Sequelize(DB_NAME, USER, PASSWORD, {
+module.exports = new Sequelize(DB_NAME, "root", PASSWORD, {
   host: HOST,
   logging: false,
   dialect: 'mysql'

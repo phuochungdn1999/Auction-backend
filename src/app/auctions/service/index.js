@@ -26,6 +26,12 @@ async function getAll(req, res) {
   let options;
   console.log(req.query.categoryId === "ALL");
   console.log(req.query.categoryId && !req.query.categoryId === "ALL");
+  if(req.query.filter === "ALL"){
+    itemCount = await repository.getCount();
+    auctions = await repository.getAll({
+      order: [["updatedAt", "DESC"]]
+    });
+  }
   if (req.query.categoryId && req.query.categoryId !== "ALL") {
     itemCount = await repository.getCount({
       include: [
@@ -61,9 +67,25 @@ async function getAll(req, res) {
     });
   }
 
+  return res.status(200).json({ data: auctions, ...options,itemCount });
+}
+async function getAllAdmin(req, res) {
+  console.log(req.query);
+  console.log(req.query.categoryId);
+  let objCategory;
+  let auctions;
+  let itemCount;
+  let options;
+  
+    auctions = await repository.getAll({
+      
+      order: [["updatedAt", "DESC"]],
+      ...options,
+    });
+ 
+
   return res.status(200).json({ data: auctions, ...options });
 }
-
 async function getTopAuction(req, res) {
   const auctions = await repository.getTopAuction();
 
@@ -250,5 +272,6 @@ module.exports = {
   approveAuction,
   confirmReceive,
   confirmSend,
+  getAllAdmin
   // searchByName
 };

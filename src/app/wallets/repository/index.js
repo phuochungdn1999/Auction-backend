@@ -4,12 +4,23 @@ const {
   NotFoundError,
 } = require("../../../common/errors/http-errors");
 const bcrypt = require("bcrypt");
+const { QueryTypes } = require("sequelize");
+const sequelize = require("../../../database/connection");
 
 async function getAll(options) {
   const wallets = await Wallet.findAll({ ...options });
   return {
     wallets,
   };
+}
+async function getAll1() {
+  const wallets = await sequelize.query(
+    `select wallets.id, wallets.createdAt,auctions.id as auctionId,auctions.numberOfParticipants,auctions.highestBid,auctions.name from wallets left join auctions on wallets.id = auctions.owner   ORDER BY  auctions.updatedAt DESC `,
+    { type: QueryTypes.SELECT }
+
+  )
+  return wallets;
+
 }
 async function getOne(id) {
   const wallet = await Wallet.findOne({
@@ -47,6 +58,7 @@ async function getOffer(options) {
 module.exports = {
   getCount,
   getAll,
+  getAll1,
   getOne,
   getOffer,
   // getOneByIdOrFail,

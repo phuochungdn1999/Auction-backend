@@ -13,11 +13,42 @@ const {
 } = require("../../../common/errors/http-errors");
 async function getAll(req, res) {
   const itemCount = await repository.getCount();
-  let options = pagination(req.query, itemCount);
-  console.log(itemCount);
-  console.log(options);
-  const wallets = await repository.getAll({ ...options });
-  return res.status(200).json({ data: wallets, ...options });
+  let wallets;
+  let options;
+  if (req.query.filter == "ALL") {
+    wallets1 = await repository.getAll1();
+    let temp = [];
+    const distinct = [...new Set(wallets1.map((x) => x.id))];
+    distinct.forEach((e) => {
+      temp.push({
+        id: e,
+        createdAt: "",
+        numberOfAuction: 0,
+        numberOfParticipants: 0,
+        totalBid: 0,
+      });
+    });
+     wallets = temp;
+    wallets1.forEach((i) => {
+      temp.forEach((e,index)=>{
+        if(e.id == i.id){
+          i.auctionId ? wallets[index].numberOfAuction += 1: wallets[index].numberOfAuction += 0;
+          i.numberOfParticipants ? wallets[index].numberOfParticipants += i.numberOfParticipants: wallets[index].numberOfParticipants += 0;
+          i.highestBid ? wallets[index].totalBid += i.highestBid: wallets[index].totalBid += 0;
+          wallets[index].createdAt = i.createdAt;
+          return
+        }
+      })
+    });
+  } else {
+    options = pagination(req.query, itemCount);
+    wallets = await repository.getAll({
+      order: [["updatedAt", "DESC"]],
+      ...options,
+    });
+  }
+
+  return res.status(200).json({ data: wallets, ...options, itemCount });
 }
 async function getOffer(req, res) {
   const auction = await repository.getOffer(req.params.id, {

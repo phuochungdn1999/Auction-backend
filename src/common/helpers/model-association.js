@@ -24,6 +24,11 @@ module.exports = function () {
     as: "wallet",
     foreignKey: "walletId",
   });
+  Wallet.hasMany(Offer, {
+    foreignKey: "walletId",
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
   // CategoryAuction.belongsTo(Category, {
   //   as: "category",
   //   foreignKey: "categoryId",

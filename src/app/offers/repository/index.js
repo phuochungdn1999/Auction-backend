@@ -8,7 +8,7 @@ const { QueryTypes } = require("sequelize");
 const sequelize = require("../../../database/connection");
 
 async function getAll(options) {
-  const offers = await Offer.findAll();
+  const offers = await Offer.findAll({...options});
   return {
     offers,
   };
@@ -34,6 +34,10 @@ async function getOneByWalletAndAuction(address, auctionId) {
     attributes: { exclude: ["createdAt", "updatedAt"] },
   });
   return offer;
+}
+async function getCount(options) {
+  const itemCount = await Offer.count(options);
+  return itemCount;
 }
 async function getOfferByAuctionId(auctionId) {
   const offer = await Offer.findAll({
@@ -75,7 +79,7 @@ async function createOne(body, options) {
 }
 
 module.exports = {
-  // getCount,
+  getCount,
   getAll,
   getOne,
   getOneByIdOrFail,

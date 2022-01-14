@@ -3,7 +3,7 @@ const service = require("../service");
 const { auth } = require("../../../common/middlewares/auth");
 
 router.get("/", async (req, res) => {
-  // return await service.getAll(req, res);
+  return await service.getAll(req, res);
 }); //done
 router.get("/top", async (req, res) => {
   return await service.getTopOffer(req, res);
