@@ -15,6 +15,7 @@
     "bcrypt": "^5.0.0",
     "bignumber.js": "^9.0.1",
     "bluebird": "^3.7.2",
+    "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "elasticbulk": "^1.0.10",
@@ -32,9 +33,11 @@
     "mysql2": "^2.2.4",
     "nodemailer": "^6.4.16",
     "nodemon": "^2.0.6",
+    "path": "^0.12.7",
     "redis": "^3.0.2",
     "sequelize": "^6.3.5",
     "swagger-ui-express": "^4.1.4",
+    "sys": "^0.0.1",
     "uuid": "^8.3.1",
     "web3": "^1.6.0"
   }

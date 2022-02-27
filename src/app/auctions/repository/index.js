@@ -77,7 +77,7 @@ async function getOneByIdOrFail(id, options) {
 
 async function createOne(body, options) {
   const auction = await Auction.create(body);
-  await insertOneToEs(auction);
+  // await insertOneToEs(auction);
   return auction;
 }
 

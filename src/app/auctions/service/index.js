@@ -117,7 +117,7 @@ async function search(req, res) {
       },
     },
   };
-  const data = await repository.search(body);
+  const data = await repository.searchSQL(req.params.name);
   return res.status(200).json({ data });
 }
 
@@ -234,7 +234,8 @@ async function approveAuction(req, res) {
   const updateBody = {
     endAuction: true,
   };
-  await Auction.update(updateBody, { where: { id: id } });
+  
+  console.log(await Auction.update(updateBody, { where: { id: id } }));
 
   return res.json({ status: 200 });
 }
