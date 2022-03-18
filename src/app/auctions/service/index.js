@@ -69,6 +69,18 @@ async function getAll(req, res) {
 
   return res.status(200).json({ data: auctions, ...options,itemCount });
 }
+
+async function getAllRelated(req, res) {
+  
+  
+    auctions = await repository.getAll({
+      order: [["updatedAt", "DESC"]],
+      limit:5,
+    });
+  
+
+  return res.status(200).json({ data: auctions});
+}
 async function getAllAdmin(req, res) {
   console.log(req.query);
   console.log(req.query.categoryId);
@@ -273,6 +285,7 @@ module.exports = {
   approveAuction,
   confirmReceive,
   confirmSend,
-  getAllAdmin
+  getAllAdmin,
+  getAllRelated
   // searchByName
 };

@@ -6,6 +6,9 @@ const { validateAuction } = require("../../../common/models/Auction");
 router.get("/", async (req, res) => {
   return await service.getAll(req, res);
 }); //done
+router.get("/related", async (req, res) => {
+  return await service.getAllRelated(req, res);
+}); //done
 router.get("/search/:name", async (req, res) => {
   return await service.search(req, res);
 }); //done
